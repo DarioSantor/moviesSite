@@ -1,6 +1,6 @@
 let movies = [];
 
-function init() {
+init = () => {
     getGenres(populateGenres);
 
     const genresDropDownList = document.getElementById('genres');
@@ -23,7 +23,7 @@ function init() {
     });
 }
 
-function displayMovieList(movies) {
+displayMovieList= (movies) => {
     document.getElementById("main").innerHTML = '';
 
     movies.forEach(function (movie){
@@ -31,8 +31,7 @@ function displayMovieList(movies) {
     });
 }
 
-function getMovieHtml(movie){
-    return `<div class="movie">
+getMovieHtml = (movie) =>  `<div class="movie">
     <h2>${movie.title}</h2>
     <div class="content">
     <img src="${movie.posterUrl}" alt="${movie.title}" />
@@ -44,9 +43,9 @@ function getMovieHtml(movie){
     </div>
     </div>
 </div>`
-}
 
-function populateGenres(data) {
+
+populateGenres= (data) => {
     data.forEach(function (genre){
         let option = document.createElement("option");
         option.text = genre;
@@ -54,20 +53,19 @@ function populateGenres(data) {
     });
 }
 
-function domIsReady() {
-    init(getMovies(handleMovies));
-}
+domIsReady = () => {init(getMovies(handleMovies))}
+
 
 document.addEventListener("DOMContentLoaded", domIsReady);
   
-function getGenres() {
+getGenres = () => {
     fetch("https://moviesfunctionapp.azurewebsites.net/api/GetGenres")
         .then(res => res.json())
         .then(json => populateGenres(json))
         .catch(err => console.log(err))
 }
 
-function getMovies(){
+getMovies = () => {
     fetch("https://moviesfunctionapp.azurewebsites.net/api/GetMovies")
         .then(res => res.json())
         .then(json =>{
@@ -77,7 +75,7 @@ function getMovies(){
         .catch(err => console.log(err))
 }
 
-function handleMovies(status, response) {
+handleMovies = (status, response) => {
     if (status==200){
         console.log("Tudo OK")
         console.log(response);
