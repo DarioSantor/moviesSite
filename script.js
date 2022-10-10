@@ -87,6 +87,3 @@ function handleMovies(status, response) {
         console.log("Error: " + status)
     }
 }
-
-
-//hey
