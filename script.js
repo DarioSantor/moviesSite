@@ -1,30 +1,32 @@
-let movies = [];
+
 
 init = () => {
-    getGenres(populateGenres);
+    getGenres(populateGenres)
 
     const genresDropDownList = document.getElementById('genres');
 
     genresDropDownList.addEventListener("change", function () {    
-        const  genreSelected= this.value;
+        const  genreSelected = this.value;
+        console.log('genreSelected>>>>', genreSelected)
 
         
-        let filteredMovies;
+        let filteredMovies
         
         if(genreSelected !== "All genres"){
-            filteredMovies = movies.filter(movie => {
-                return movie.genres === genreSelected;
-            });
+            console.log('genreSelected inside if', genreSelected)
+            filteredMovies = getMoviesFromCategory(genreSelected)
+            console.log('return getMoviesFromCategory', filteredMovies)
         } else {
-            filteredMovies = movies;
+            filteredMovies = getMovies()
         }
             
         displayMovieList(filteredMovies);
     });
 }
 
-displayMovieList= (movies) => {
+function displayMovieList(movies){
     document.getElementById("main").innerHTML = '';
+    console.log('displayMovieList', movies)
 
     movies.forEach(function (movie){
         document.getElementById("main").innerHTML += getMovieHtml(movie);
@@ -46,7 +48,7 @@ getMovieHtml = (movie) =>  `<div class="movie">
 
 
 populateGenres= (data) => {
-    data.forEach(function (genre){
+    data.forEach((genre) => {
         let option = document.createElement("option");
         option.text = genre;
         document.getElementById("genres").add(option);
@@ -69,7 +71,7 @@ getMovies = () => {
     fetch("https://moviesfunctionapp.azurewebsites.net/api/GetMovies")
         .then(res => res.json())
         .then(json =>{
-            movies = json
+            console.log(json)
             displayMovieList(json)
         })
         .catch(err => console.log(err))
@@ -78,10 +80,24 @@ getMovies = () => {
 handleMovies = (status, response) => {
     if (status==200){
         console.log("Tudo OK")
-        console.log(response);
-        movies = response
+        console.log(response)
         displayMovieList(response)
     } else {
         console.log("Error: " + status)
     }
+}
+
+function getMoviesFromCategory(category) {
+    console.log("getMoviesFromCategory")
+    console.log(category)
+    let url = "https://moviesfunctionapp.azurewebsites.net/api/GetMovies?category="+category
+    console.log(url);
+    fetch(url)
+    .then(res => res.json())
+    .then(json =>{
+        console.log('json>>',json)
+        displayMovieList(json.json())
+        
+    })
+    .catch(err => {console.log('catch erro',err)})
 }
