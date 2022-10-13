@@ -1,103 +1,158 @@
+// TODO
+//
+// 5.
+// Adicionar favoritos à listagem (*)
+//
+// 6.
+// Guardar favoritos em local storage
+// (*)-obrigatório
+//
+//DONE
+//
+//1.
+// Alterar código javascript , para quando se
+// seleciona uma categoria de filmes fazer
+// um pedido à API com o parâmetro
+// categoria (*)
+//
+// 3.
+// Alterar todo o código javascript para usar
+// arrow functions
+//
+// 4.
+// Usar fetch para chamar as APIs
+//
+// 2.
+// Quando não se recebe filmes para uma
+// categoria, deve escrever se no ecrã "Não
+// existem filmes para a categoria
+// selecionada.“ (*)
+//
+// 7.
+// Ordenar filmes cronologicamente (do
+// mais recente para o mais antigo)
 
+const init = () => {
+    // 3.
+    getGenres(populateGenres);
 
-init = () => {
-    getGenres(populateGenres)
+    const genresDropDownList = document.getElementById("genres");
 
-    const genresDropDownList = document.getElementById('genres');
+    genresDropDownList.addEventListener("change", () => {
+        // 3.
+        const genreSelected = this.value;
+        console.log("genreSelected>>>>", genreSelected);
 
-    genresDropDownList.addEventListener("change", function () {    
-        const  genreSelected = this.value;
-        console.log('genreSelected>>>>', genreSelected)
+        let filteredMovies;
 
-        
-        let filteredMovies
-        
-        if(genreSelected !== "All genres"){
-            console.log('genreSelected inside if', genreSelected)
-            filteredMovies = getMoviesFromCategory(genreSelected)
-            console.log('return getMoviesFromCategory', filteredMovies)
+        if (genreSelected !== "All genres") {
+            console.log("genreSelected inside if", genreSelected);
+            filteredMovies = getMoviesFromCategory(genreSelected);
+            console.log("return getMoviesFromCategory", filteredMovies);
         } else {
-            filteredMovies = getMovies()
+            filteredMovies = getMovies();
         }
-            
+
         displayMovieList(filteredMovies);
     });
-}
+};
 
-function displayMovieList(movies){
-    document.getElementById("main").innerHTML = '';
-    console.log('displayMovieList', movies)
+const displayMovieList = (movies) => {
+    // 3.
+    //Quando os filmes são filtrados este movies não está a entrar no formato adequado
+    document.getElementById("main").innerHTML = "";
+    console.log("displayMovieList", movies);
 
-    movies.forEach(function (movie){
-        document.getElementById("main").innerHTML += getMovieHtml(movie);
-    });
-}
+    if (movies.length > 0) {
+        // 7. - Organizar os filmes cronologicamente.
+        movies.sort((a, b) => b.year - a.year); // 3.
+        movies.forEach((movie) => {
+            // 3.
+            document.getElementById("main").innerHTML += getMovieHtml(movie);
+        });
+    } else {
+        // 2. - Mensagem de ausência de filmes.
+        console.log("Não existem filmes para a categoria selecionada.");
+        document.getElementById("main").innerHTML += noMovies();
+    }
+};
 
-getMovieHtml = (movie) =>  `<div class="movie">
+const noMovies = () => // 3.
+    `<div class="noMovies">
+    <h2>Não existem filmes para a categoria selecionada.</h2>
+    </div>`;
+
+const getMovieHtml = (movie) => // 3.
+    `<div class="movie">
     <h2>${movie.title}</h2>
     <div class="content">
-    <img src="${movie.posterUrl}" alt="${movie.title}" />
+    <img src="${movie.posterUrl}" alt="${movie.title}"/>
     <div class="text">
-        <p>${movie.summary}</p>
-        <div class="year">${movie.year}</div>
-        <div><strong>Directors:</strong> ${movie.director}</div>
-        <div><strong>Actors:</strong> ${movie.actors}</div>
+    <p>${movie.summary}</p>
+    <div class="year">${movie.year}</div>
+    <div><strong>Directors:</strong> ${movie.director}</div>
+    <div><strong>Actors:</strong> ${movie.actors}</div>
     </div>
     </div>
-</div>`
+    </div>`;
 
-
-populateGenres= (data) => {
-    data.forEach((genre) => {
+const populateGenres = (data) => { // 3.
+    data.forEach((genre) => { // 3.
         let option = document.createElement("option");
         option.text = genre;
         document.getElementById("genres").add(option);
     });
-}
+};
 
-domIsReady = () => {init(getMovies(handleMovies))}
-
+const domIsReady = () => { // 3.
+    init(getMovies(handleMovies));
+};
 
 document.addEventListener("DOMContentLoaded", domIsReady);
-  
-getGenres = () => {
-    fetch("https://moviesfunctionapp.azurewebsites.net/api/GetGenres")
-        .then(res => res.json())
-        .then(json => populateGenres(json))
-        .catch(err => console.log(err))
-}
 
-getMovies = () => {
-    fetch("https://moviesfunctionapp.azurewebsites.net/api/GetMovies")
-        .then(res => res.json())
-        .then(json =>{
-            console.log(json)
-            displayMovieList(json)
+const getGenres = () => { // 3.
+    fetch("https://moviesfunctionapp.azurewebsites.net/api/GetGenres") // 4.
+        .then((res) => res.json()) // 3.
+        .then((json) => populateGenres(json)) // 3.
+        .catch((err) => console.log(err)); // 3.
+};
+
+const getMovies = () => { // 3.
+    fetch("https://moviesfunctionapp.azurewebsites.net/api/GetMovies") // 4.
+        .then((res) => res.json()) // 3.
+        .then((json) => { // 3.
+            console.log(json);
+            displayMovieList(json);
         })
-        .catch(err => console.log(err))
-}
+        .catch((err) => console.log(err)); // 3.
+};
 
-handleMovies = (status, response) => {
-    if (status==200){
-        console.log("Tudo OK")
-        console.log(response)
-        displayMovieList(response)
+const handleMovies = (status, response) => { // 3.
+    if (status == 200) {
+        console.log("Tudo OK");
+        console.log(response);
+        displayMovieList(response);
     } else {
-        console.log("Error: " + status)
+        console.log("Error: " + status);
     }
-}
+};
 
-function getMoviesFromCategory(category) {
-    console.log("getMoviesFromCategory")
-    console.log(category)
-    let url = "https://moviesfunctionapp.azurewebsites.net/api/GetMovies?category="+category
+const getMoviesFromCategory = (category) => { // 3.
+    console.log("getMoviesFromCategory");
+    console.log(category);
+
+    // 1. - Chamada dos filmes com categoria
+    let url =
+        "https://moviesfunctionapp.azurewebsites.net/api/GetMovies?category=" +
+        category;
     console.log(url);
-    fetch(url)
-    .then(res => res.json())
-    .then(json =>{
-        console.log('json>>',json)
-        displayMovieList(json.json())
-        
-    })
-    .catch(err => {console.log('catch erro',err)})
-}
+    fetch(url) // 4.
+        .then((res) => res.json()) // 3.
+        .then((json) => { // 3.
+            console.log("json>>", json);
+            displayMovieList(json); //formato anterior -> displayMovieList(json.json())
+        })
+        .catch((err) => { // 3.
+            console.log("catch erro", err);
+        });
+};
