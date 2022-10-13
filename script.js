@@ -38,19 +38,17 @@ const init = () => {
 
     const genresDropDownList = document.getElementById("genres");
 
-    genresDropDownList.addEventListener("change", function () { // Não consegui implementar a arrow f
+    genresDropDownList.addEventListener("change", function () {
+        // Não consegui implementar a arrow f
         // 3.
         const genreSelected = this.value;
         console.log("genreSelected>>>>", genreSelected);
 
-        let filteredMovies;
-
         if (genreSelected !== "All genres") {
             console.log("genreSelected inside if", genreSelected);
-            getMoviesFromCategory(genreSelected);  // antes => filteredMovies = getMoviesFromCategory(genreSelected);
-            console.log("return getMoviesFromCategory", filteredMovies);
+            getMoviesFromCategory(genreSelected); // antes => filteredMovies = getMoviesFromCategory(genreSelected);
         } else {
-            getMovies(); // antesfilteredMovies = getMovies()
+            getMovies(); // antes filteredMovies = getMovies()
         }
 
         // displayMovieList(filteredMovies); Aqui estava o erro da consola.
@@ -59,16 +57,31 @@ const init = () => {
 
 const displayMovieList = (movies) => {
     // 3.
-    //Quando os filmes são filtrados este movies não estava a entrar no formato adequado
     document.getElementById("main").innerHTML = "";
+
     console.log("displayMovieList", movies);
 
+    // Adicionar a propriedade de favorito ao filme
+    for (element of movies) {
+        element.favourite = false;
+    }
+
+    // movies[2].favourite = true
+    // console.log(movies[2].favourite, movies[2].title)
+
     if (movies.length > 0) {
+        let favouriteStatus = ""
         // 7. - Organizar os filmes cronologicamente
         movies.sort((a, b) => b.year - a.year); // 3.
-        movies.forEach((movie) => {
-            // 3.
-            document.getElementById("main").innerHTML += getMovieHtml(movie);
+        // Acrescentar o atributo de favorito ao filme
+        movies.forEach((movie) => {// 3.
+
+            if (movie.favourite) {
+                favouriteStatus = "icons/filled-star.png";
+            } else {
+                favouriteStatus = "icons/empty-star.png";
+            }
+            document.getElementById("main").innerHTML += getMovieHtml(movie, favouriteStatus);
         });
     } else {
         // 2. - Mensagem de ausência de filmes
@@ -77,14 +90,17 @@ const displayMovieList = (movies) => {
     }
 };
 
-const noMovies = () => // 3.
+const noMovies = () =>
+    // 3.
     `<div class="noMovies">
     <h2>Não existem filmes para a categoria selecionada.</h2>
     </div>`;
 
-const getMovieHtml = (movie) => // 3.
+const getMovieHtml = (movie, fSts) =>
     `<div class="movie">
-    <h2>${movie.title}</h2>
+    <div class="movie-header">
+    <img src="${fSts}" class="favStar" alt="favourite status" /><h2>${movie.title}</h2>
+    </div>
     <div class="content">
     <img src="${movie.posterUrl}" alt="${movie.title}"/>
     <div class="text">
@@ -96,38 +112,46 @@ const getMovieHtml = (movie) => // 3.
     </div>
     </div>`;
 
-const populateGenres = (data) => { // 3.
-    data.forEach((genre) => { // 3.
+const populateGenres = (data) => {
+    // 3.
+    data.forEach((genre) => {
+        // 3.
         let option = document.createElement("option");
         option.text = genre;
         document.getElementById("genres").add(option);
     });
 };
 
-const domIsReady = () => { // 3.
+const domIsReady = () => {
+    // 3.
     init(getMovies(handleMovies));
 };
 
 document.addEventListener("DOMContentLoaded", domIsReady);
 
-const getGenres = () => { // 3.
+const getGenres = () => {
+    // 3.
     fetch("https://moviesfunctionapp.azurewebsites.net/api/GetGenres") // 4.
         .then((res) => res.json()) // 3.
         .then((json) => populateGenres(json)) // 3.
         .catch((err) => console.log(err)); // 3.
 };
 
-const getMovies = () => { // 3.
+const getMovies = () => {
+    // 3.
     fetch("https://moviesfunctionapp.azurewebsites.net/api/GetMovies")
         .then((res) => res.json()) // 3.
-        .then((json) => { // 3.
+        .then((json) => {
+            // 3.
             console.log(json);
             displayMovieList(json);
         })
         .catch((err) => console.log(err)); // 3.
 };
 
-const handleMovies = (status, response) => { // 3.
+// Verificar se ambos os fetches passam por aqui.
+const handleMovies = (status, response) => {
+    // 3.
     if (status == 200) {
         console.log("Tudo OK");
         console.log(response);
@@ -137,7 +161,8 @@ const handleMovies = (status, response) => { // 3.
     }
 };
 
-const getMoviesFromCategory = (category) => { // 3.
+const getMoviesFromCategory = (category) => {
+    // 3.
     console.log("getMoviesFromCategory");
     console.log(category);
 
@@ -148,11 +173,19 @@ const getMoviesFromCategory = (category) => { // 3.
     console.log(url);
     fetch(url)
         .then((res) => res.json()) // 3.
-        .then((json) => { // 3.
+        .then((json) => {
+            // 3.
             console.log("json>>", json);
-            displayMovieList(json); //formato anterior -> displayMovieList(json.json())
+            displayMovieList(json);
         })
-        .catch((err) => { // 3.
+        .catch((err) => {
+            // 3.
             console.log("catch erro", err);
         });
 };
+
+// for (let i = 0; i < movies.length; i++) {
+//     movies[i].favourite = false;
+// }
+
+// console.log(movies[0].title)

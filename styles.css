@@ -4,8 +4,21 @@ body{
   box-sizing: border-box;
 }
 
+
+.favStar {
+  width: 30px;
+  height: 30px;
+  padding-right: 10px;
+}
+
 .heading > h1{
   text-align: center;
+}
+
+.movie-header {
+  display: flex;
+  align-items: center;
+  
 }
 
 .filters {
