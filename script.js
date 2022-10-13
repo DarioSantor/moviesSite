@@ -38,7 +38,7 @@ const init = () => {
 
     const genresDropDownList = document.getElementById("genres");
 
-    genresDropDownList.addEventListener("change", () => {
+    genresDropDownList.addEventListener("change", function () { // Não consegui implementar a arrow f
         // 3.
         const genreSelected = this.value;
         console.log("genreSelected>>>>", genreSelected);
@@ -47,31 +47,31 @@ const init = () => {
 
         if (genreSelected !== "All genres") {
             console.log("genreSelected inside if", genreSelected);
-            filteredMovies = getMoviesFromCategory(genreSelected);
+            getMoviesFromCategory(genreSelected);  // antes => filteredMovies = getMoviesFromCategory(genreSelected);
             console.log("return getMoviesFromCategory", filteredMovies);
         } else {
-            filteredMovies = getMovies();
+            getMovies(); // antesfilteredMovies = getMovies()
         }
 
-        displayMovieList(filteredMovies);
+        // displayMovieList(filteredMovies); Aqui estava o erro da consola.
     });
 };
 
 const displayMovieList = (movies) => {
     // 3.
-    //Quando os filmes são filtrados este movies não está a entrar no formato adequado
+    //Quando os filmes são filtrados este movies não estava a entrar no formato adequado
     document.getElementById("main").innerHTML = "";
     console.log("displayMovieList", movies);
 
     if (movies.length > 0) {
-        // 7. - Organizar os filmes cronologicamente.
+        // 7. - Organizar os filmes cronologicamente
         movies.sort((a, b) => b.year - a.year); // 3.
         movies.forEach((movie) => {
             // 3.
             document.getElementById("main").innerHTML += getMovieHtml(movie);
         });
     } else {
-        // 2. - Mensagem de ausência de filmes.
+        // 2. - Mensagem de ausência de filmes
         console.log("Não existem filmes para a categoria selecionada.");
         document.getElementById("main").innerHTML += noMovies();
     }
@@ -118,7 +118,7 @@ const getGenres = () => { // 3.
 };
 
 const getMovies = () => { // 3.
-    fetch("https://moviesfunctionapp.azurewebsites.net/api/GetMovies") // 4.
+    fetch("https://moviesfunctionapp.azurewebsites.net/api/GetMovies")
         .then((res) => res.json()) // 3.
         .then((json) => { // 3.
             console.log(json);
@@ -146,7 +146,7 @@ const getMoviesFromCategory = (category) => { // 3.
         "https://moviesfunctionapp.azurewebsites.net/api/GetMovies?category=" +
         category;
     console.log(url);
-    fetch(url) // 4.
+    fetch(url)
         .then((res) => res.json()) // 3.
         .then((json) => { // 3.
             console.log("json>>", json);
