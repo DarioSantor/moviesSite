@@ -1,12 +1,5 @@
 // TODO
 //
-// 5.
-// Adicionar favoritos à listagem (*)
-//
-// 6.
-// Guardar favoritos em local storage
-// (*)-obrigatório
-//
 //DONE
 //
 //1.
@@ -31,6 +24,13 @@
 // 7.
 // Ordenar filmes cronologicamente (do
 // mais recente para o mais antigo)
+//
+// 5.
+// Adicionar favoritos à listagem (*)
+//
+// 6.
+// Guardar favoritos em local storage
+// (*)-obrigatório
 
 const init = () => {
     // 3.
@@ -38,7 +38,7 @@ const init = () => {
 
     const genresDropDownList = document.getElementById("genres");
 
-    genresDropDownList.addEventListener("change", function () {
+    genresDropDownList.addEventListener("change", function () {  //wtf (e) => não funciona também
         // Não consegui implementar a arrow f
         // 3.
         const genreSelected = this.value;
@@ -62,32 +62,55 @@ const displayMovieList = (movies) => {
     console.log("displayMovieList", movies);
 
     // Adicionar a propriedade de favorito ao filme
-    for (element of movies) {
-        element.favourite = false;
-    }
-
-    // movies[2].favourite = true
-    // console.log(movies[2].favourite, movies[2].title)
+    // for (element of movies) {
+    //     element.favourite = false;
+    // }
 
     if (movies.length > 0) {
-        let favouriteStatus = ""
+        let favouriteStatus = "";
         // 7. - Organizar os filmes cronologicamente
         movies.sort((a, b) => b.year - a.year); // 3.
         // Acrescentar o atributo de favorito ao filme
-        movies.forEach((movie) => {// 3.
+        movies.forEach((movie) => {
+            // 3.
+            // if(localStorage.getItem(movie.id)) {
+            //     console.log('localStorage.getItem(movie.id)', localStorage.getItem(movie.id))
+            //     movie.favourite = true;
+            // }
 
-            if (movie.favourite) {
+            if(localStorage.getItem(movie.id)){
                 favouriteStatus = "icons/filled-star.png";
             } else {
                 favouriteStatus = "icons/empty-star.png";
             }
-            document.getElementById("main").innerHTML += getMovieHtml(movie, favouriteStatus);
+
+
+            // if (movie.favourite) {
+            //     favouriteStatus = "icons/filled-star.png";
+            // } else {
+            //     favouriteStatus = "icons/empty-star.png";
+            // }
+            document.getElementById("main").innerHTML += getMovieHtml(movie,favouriteStatus);
+
         });
     } else {
         // 2. - Mensagem de ausência de filmes
         console.log("Não existem filmes para a categoria selecionada.");
         document.getElementById("main").innerHTML += noMovies();
     }
+};
+
+const setFavStatus = (id) => {
+    if(localStorage.getItem(id)){
+        console.log("Retirado nos favoritos")
+        localStorage.removeItem(id)
+        document.getElementById(id).src = "icons/empty-star.png";
+    } else {
+        console.log("Colocado nos favoritos")
+        localStorage.setItem(id, true)
+        document.getElementById(id).src = "icons/filled-star.png";
+    }
+    
 };
 
 const noMovies = () =>
@@ -99,7 +122,7 @@ const noMovies = () =>
 const getMovieHtml = (movie, fSts) =>
     `<div class="movie">
     <div class="movie-header">
-    <img src="${fSts}" class="favStar" alt="favourite status" /><h2>${movie.title}</h2>
+    <img src="${fSts}" class="favStar" alt="favourite status" id="${movie.id}" onClick="setFavStatus(${movie.id})"/><h2>${movie.title}</h2>
     </div>
     <div class="content">
     <img src="${movie.posterUrl}" alt="${movie.title}"/>
@@ -183,9 +206,3 @@ const getMoviesFromCategory = (category) => {
             console.log("catch erro", err);
         });
 };
-
-// for (let i = 0; i < movies.length; i++) {
-//     movies[i].favourite = false;
-// }
-
-// console.log(movies[0].title)
