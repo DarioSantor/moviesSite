@@ -38,7 +38,8 @@ const init = () => {
 
     const genresDropDownList = document.getElementById("genres");
 
-    genresDropDownList.addEventListener("change", function () {  //wtf (e) => não funciona também
+    genresDropDownList.addEventListener("change", function () {
+        //wtf (e) => não funciona também
         // Não consegui implementar a arrow f
         // 3.
         const genreSelected = this.value;
@@ -78,20 +79,21 @@ const displayMovieList = (movies) => {
             //     movie.favourite = true;
             // }
 
-            if(localStorage.getItem(movie.id)){
+            if (localStorage.getItem(movie.id)) {
                 favouriteStatus = "icons/filled-star.png";
             } else {
                 favouriteStatus = "icons/empty-star.png";
             }
-
 
             // if (movie.favourite) {
             //     favouriteStatus = "icons/filled-star.png";
             // } else {
             //     favouriteStatus = "icons/empty-star.png";
             // }
-            document.getElementById("main").innerHTML += getMovieHtml(movie,favouriteStatus);
-
+            document.getElementById("main").innerHTML += getMovieHtml(
+                movie,
+                favouriteStatus
+            );
         });
     } else {
         // 2. - Mensagem de ausência de filmes
@@ -101,16 +103,16 @@ const displayMovieList = (movies) => {
 };
 
 const setFavStatus = (id) => {
-    if(localStorage.getItem(id)){
-        console.log("Retirado nos favoritos")
-        localStorage.removeItem(id)
+    if (localStorage.getItem(id)) {
+        console.log("Retirado nos favoritos");
+        localStorage.removeItem(id);
         document.getElementById(id).src = "icons/empty-star.png";
     } else {
-        console.log("Colocado nos favoritos")
-        localStorage.setItem(id, true)
+        console.log("Colocado nos favoritos");
+        localStorage.setItem(id, true);
         document.getElementById(id).src = "icons/filled-star.png";
     }
-    
+
 };
 
 const noMovies = () =>
@@ -147,7 +149,7 @@ const populateGenres = (data) => {
 
 const domIsReady = () => {
     // 3.
-    init(getMovies(handleMovies));
+    init(getMovies()); //  antes ->  init(getMovies(handleMovies));
 };
 
 document.addEventListener("DOMContentLoaded", domIsReady);
@@ -173,16 +175,16 @@ const getMovies = () => {
 };
 
 // Verificar se ambos os fetches passam por aqui.
-const handleMovies = (status, response) => {
-    // 3.
-    if (status == 200) {
-        console.log("Tudo OK");
-        console.log(response);
-        displayMovieList(response);
-    } else {
-        console.log("Error: " + status);
-    }
-};
+// const handleMovies = (status, response) => {
+//     // 3.
+//     if (status == 200) {
+//         console.log("Tudo OK");
+//         console.log("handle movies function-->", response);
+//         displayMovieList(response);
+//     } else {
+//         console.log("Error: " + status);
+//     }
+// };
 
 const getMoviesFromCategory = (category) => {
     // 3.
