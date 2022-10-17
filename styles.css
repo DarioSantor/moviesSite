@@ -34,6 +34,7 @@ body{
 .movies-container .movie{
   width: 45%;
   margin: 0 0 5% 0;
+  
 }
 
 .movies-container .movie .content{
@@ -41,15 +42,22 @@ body{
   flex-direction: row;
   flex-wrap: nowrap;
   justify-content: start;
-  background-color: #F9F9F9;
+  background-color: #f9f9f9;
+  overflow: auto;
+  padding: 0.5%;
+  border-top: 1px solid black;
+
 }
 
 .movies-container .movie .content .text{
-  margin:20px 20px;
+  margin: 0;
+  padding: 2%;
+  max-height: fit-content;
 }
 
 .movies-container .movie .content > img{
   min-height: 350px;
+  max-height: 300px;
 }
 
 .movies-container .movie .content > div > p{
@@ -62,9 +70,11 @@ body{
 }
 
 @media (max-width: 768px) {
+
+  
   .movies-container .movie{
     width: 100%;
-    margin:0 0 20px 0;
+    margin: 0px 20px 20px 20px;
     padding: 0;
     background-color: #fff;
   }
@@ -72,11 +82,19 @@ body{
   .movies-container .movie .content{
     display: flex;
     flex-flow: column nowrap;
-    justify-content: flext-start;
+    justify-content: flex-start;
+    /* min-height: fit-content; */
+    overflow-y: auto;
   }
- 
-  .movies-container .movie .content .text{
-    margin:20px 0;
+
+  .movies-container .movie .content > img{
+    max-width: 500px;
+    min-height: 500px;
+    margin: 10px auto 10px auto;
+  }
+
+  .movie-header{
+    justify-content: center;
   }
 }
 
