@@ -6,8 +6,8 @@ const init = () => {
 
     const genresDropDownList = document.getElementById("genres")
 
-    genresDropDownList.addEventListener("change", function () {
-        const genreSelected = this.value
+    genresDropDownList.addEventListener("change", (e) => {
+        const genreSelected = e.target.value
         if (genreSelected !== "All genres") {
             getMoviesFromCategory(genreSelected)
         } else {
