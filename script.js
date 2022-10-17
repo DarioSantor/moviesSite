@@ -1,3 +1,6 @@
+const starFilled = "icons/filled-star.png"
+const starEmpty = "icons/empty-star.png"
+
 const init = () => {
     getGenres(populateGenres)
 
@@ -20,9 +23,9 @@ const displayMovieList = (movies) => {
         movies.sort((a, b) => b.year - a.year);
         movies.forEach((movie) => {
             if (localStorage.getItem(movie.id)) {
-                favouriteStatus = "icons/filled-star.png"
+                favouriteStatus = starFilled
             } else {
-                favouriteStatus = "icons/empty-star.png"
+                favouriteStatus = starEmpty
             }
             document.getElementById("main").innerHTML += getMovieHtml(movie, favouriteStatus)
         })
