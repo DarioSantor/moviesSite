@@ -37,10 +37,10 @@ const displayMovieList = (movies) => {
 const setFavStatus = (id) => {
     if (localStorage.getItem(id)) {
         localStorage.removeItem(id)
-        document.getElementById(id).src = "icons/empty-star.png"
+        document.getElementById(id).src = starEmpty
     } else {
         localStorage.setItem(id, true)
-        document.getElementById(id).src = "icons/filled-star.png"
+        document.getElementById(id).src = starFilled
     }
 
 };
@@ -67,6 +67,7 @@ const getMovieHtml = (movie, fSts) =>
     </div>`
 
 const populateGenres = (data) => {
+    data.push('Favorites')
     data.forEach((genre) => {
         let option = document.createElement("option")
         option.text = genre
