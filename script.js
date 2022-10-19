@@ -8,14 +8,15 @@ const init = () => {
 
     genresDropDownList.addEventListener("change", (e) => {
         const genreSelected = e.target.value;
-        if (genreSelected === "Favorites") {
-            console.log("fav selected");
-            getFavourites();
-        } else if (genreSelected !== "All genres") {
-            console.log("genre selected");
-            getMoviesFromCategory(genreSelected);
-        } else {
-            getMovies();
+        switch (genreSelected) {
+            case "All genres":
+                getMovies();
+                break;
+            case "Favorites":
+                getFavourites();
+                break;
+            default:
+                getMoviesFromCategory(genreSelected);
         }
     });
 };
@@ -23,15 +24,8 @@ const init = () => {
 const displayMovieList = (movies) => {
     document.getElementById("main").innerHTML = "";
     if (movies.length > 0) {
-        //let favouriteStatus = ""
         movies.sort((a, b) => b.year - a.year);
         movies.forEach((movie) => {
-            // if (localStorage.getItem(movie.id)) {
-            //     favouriteStatus = starFilled
-            // } else {
-            //     favouriteStatus = starEmpty
-            // }
-            //document.getElementById("main").innerHTML += getMovieHtml(movie, favouriteStatus)
             document.getElementById("main").innerHTML += getMovieHtml(
                 movie,
                 localStorage.getItem(movie.id) ? starFilled : starEmpty
@@ -105,12 +99,9 @@ const getMovies = () => {
 };
 
 const getMoviesFromCategory = (category) => {
-    console.log("getMoviesFromCategory");
-    console.log(category);
     let url =
         "https://moviesfunctionapp.azurewebsites.net/api/GetMovies?category=" +
         category;
-    console.log(url);
     fetch(url)
         .then((res) => res.json())
         .then((json) => {
@@ -131,7 +122,6 @@ const getFavourites = () => {
                     favList.push(movie);
                 }
             });
-            console.log(favList);
             displayMovieList(favList);
         })
         .catch((err) => console.log(err));
