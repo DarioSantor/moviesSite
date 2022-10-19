@@ -1,54 +1,61 @@
-const starFilled = "icons/filled-star.png"
-const starEmpty = "icons/empty-star.png"
+const starFilled = "icons/filled-star.png";
+const starEmpty = "icons/empty-star.png";
 
 const init = () => {
-    getGenres(populateGenres)
+    getGenres(populateGenres);
 
-    const genresDropDownList = document.getElementById("genres")
+    const genresDropDownList = document.getElementById("genres");
 
     genresDropDownList.addEventListener("change", (e) => {
-        const genreSelected = e.target.value
-        if (genreSelected !== "All genres") {
-            getMoviesFromCategory(genreSelected)
+        const genreSelected = e.target.value;
+        if (genreSelected === "Favorites") {
+            console.log("fav selected");
+            getFavourites();
+        } else if (genreSelected !== "All genres") {
+            console.log("genre selected");
+            getMoviesFromCategory(genreSelected);
         } else {
-            getMovies()
+            getMovies();
         }
-    })
-}
+    });
+};
 
 const displayMovieList = (movies) => {
-    document.getElementById("main").innerHTML = ""
+    document.getElementById("main").innerHTML = "";
     if (movies.length > 0) {
-        let favouriteStatus = ""
+        //let favouriteStatus = ""
         movies.sort((a, b) => b.year - a.year);
         movies.forEach((movie) => {
-            if (localStorage.getItem(movie.id)) {
-                favouriteStatus = starFilled
-            } else {
-                favouriteStatus = starEmpty
-            }
-            document.getElementById("main").innerHTML += getMovieHtml(movie, favouriteStatus)
-        })
+            // if (localStorage.getItem(movie.id)) {
+            //     favouriteStatus = starFilled
+            // } else {
+            //     favouriteStatus = starEmpty
+            // }
+            //document.getElementById("main").innerHTML += getMovieHtml(movie, favouriteStatus)
+            document.getElementById("main").innerHTML += getMovieHtml(
+                movie,
+                localStorage.getItem(movie.id) ? starFilled : starEmpty
+            );
+        });
     } else {
-        document.getElementById("main").innerHTML += noMovies()
+        document.getElementById("main").innerHTML += noMovies();
     }
-}
+};
 
 const setFavStatus = (id) => {
     if (localStorage.getItem(id)) {
-        localStorage.removeItem(id)
-        document.getElementById(id).src = starEmpty
+        localStorage.removeItem(id);
+        document.getElementById(id).src = starEmpty;
     } else {
-        localStorage.setItem(id, true)
-        document.getElementById(id).src = starFilled
+        localStorage.setItem(id, true);
+        document.getElementById(id).src = starFilled;
     }
-
 };
 
 const noMovies = () =>
     `<div class="noMovies">
     <h2>Não existem filmes para a categoria selecionada.</h2>
-    </div>`
+    </div>`;
 
 const getMovieHtml = (movie, fSts) =>
     `<div class="movie">
@@ -64,52 +71,68 @@ const getMovieHtml = (movie, fSts) =>
     <div><strong>Actors:</strong> ${movie.actors}</div>
     </div>
     </div>
-    </div>`
+    </div>`;
 
 const populateGenres = (data) => {
-    data.push('Favorites')
+    data.push("Favorites");
     data.forEach((genre) => {
-        let option = document.createElement("option")
-        option.text = genre
-        document.getElementById("genres").add(option)
-    })
-}
+        let option = document.createElement("option");
+        option.text = genre;
+        document.getElementById("genres").add(option);
+    });
+};
 
 const domIsReady = () => {
-    init(getMovies())
-}
+    init(getMovies());
+};
 
-document.addEventListener("DOMContentLoaded", domIsReady)
+document.addEventListener("DOMContentLoaded", domIsReady);
 
 const getGenres = () => {
     fetch("https://moviesfunctionapp.azurewebsites.net/api/GetGenres")
         .then((res) => res.json())
         .then((json) => populateGenres(json))
-        .catch((err) => console.log(err))
-}
+        .catch((err) => console.log(err));
+};
 
 const getMovies = () => {
     fetch("https://moviesfunctionapp.azurewebsites.net/api/GetMovies")
         .then((res) => res.json())
         .then((json) => {
-            displayMovieList(json)
+            displayMovieList(json);
         })
-        .catch((err) => console.log(err))
-}
+        .catch((err) => console.log(err));
+};
 
 const getMoviesFromCategory = (category) => {
-    console.log("getMoviesFromCategory")
-    console.log(category)
+    console.log("getMoviesFromCategory");
+    console.log(category);
     let url =
         "https://moviesfunctionapp.azurewebsites.net/api/GetMovies?category=" +
-        category
-    console.log(url)
+        category;
+    console.log(url);
     fetch(url)
         .then((res) => res.json())
         .then((json) => {
-            displayMovieList(json)
+            displayMovieList(json);
         })
         .catch((err) => {
-            console.log("catch erro", err)
+            console.log("catch erro", err);
+        });
+};
+
+const getFavourites = () => {
+    let favList = [];
+    fetch("https://moviesfunctionapp.azurewebsites.net/api/GetMovies")
+        .then((res) => res.json())
+        .then((json) => {
+            json.forEach((movie) => {
+                if (localStorage.getItem(movie.id)) {
+                    favList.push(movie);
+                }
+            });
+            console.log(favList);
+            displayMovieList(favList);
         })
-}
+        .catch((err) => console.log(err));
+};
