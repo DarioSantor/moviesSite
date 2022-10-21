@@ -102,11 +102,11 @@ const getMovies = (category) => {
     let url = ''
     if (category == 'All genres' || category == undefined){
         url = urlMovies
-        console.log("Com categoria ->", url)
+        console.log("Sem categoria ->", category, url)
     }
     else {
         url = urlMovies + '?category=' + category
-        console.log("Sem categoria ->", url)
+        console.log("Com categoria ->", category, url)
     }
     fetch(url)
         .then((res) => res.json())
