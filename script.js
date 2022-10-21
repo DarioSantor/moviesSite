@@ -1,5 +1,6 @@
 const starFilled = "icons/filled-star.png";
 const starEmpty = "icons/empty-star.png";
+const urlMovies = "https://moviesfunctionapp.azurewebsites.net/api/GetMovies"
 
 const init = () => {
     getGenres(populateGenres);
@@ -8,15 +9,22 @@ const init = () => {
 
     genresDropDownList.addEventListener("change", (e) => {
         const genreSelected = e.target.value;
-        switch (genreSelected) {
-            case "All genres":
-                getMovies();
-                break;
-            case "Favorites":
-                getFavourites();
-                break;
-            default:
-                getMoviesFromCategory(genreSelected);
+        // switch (genreSelected) {
+        //     case "All genres":
+        //         getMovies();
+        //         break;
+        //     case "Favorites":
+        //         getFavourites();
+        //         break;
+        //     default:
+        //         getMoviesFromCategory(genreSelected);
+        // }
+        if (genreSelected != 'Favourites'){
+            console.log("Género seleccionado ->", genreSelected);
+            getMovies(genreSelected);
+        }
+        else {
+            getFavourites();
         }
     });
 };
@@ -68,7 +76,7 @@ const getMovieHtml = (movie, fSts) =>
     </div>`;
 
 const populateGenres = (data) => {
-    data.push("Favorites");
+    data.push("Favourites");
     data.forEach((genre) => {
         let option = document.createElement("option");
         option.text = genre;
@@ -89,8 +97,18 @@ const getGenres = () => {
         .catch((err) => console.log(err));
 };
 
-const getMovies = () => {
-    fetch("https://moviesfunctionapp.azurewebsites.net/api/GetMovies")
+const getMovies = (category) => {
+    console.log(category)
+    let url = ''
+    if (category == 'All genres' || category == undefined){
+        url = urlMovies
+        console.log("Com categoria ->", url)
+    }
+    else {
+        url = urlMovies + '?category=' + category
+        console.log("Sem categoria ->", url)
+    }
+    fetch(url)
         .then((res) => res.json())
         .then((json) => {
             displayMovieList(json);
@@ -98,19 +116,19 @@ const getMovies = () => {
         .catch((err) => console.log(err));
 };
 
-const getMoviesFromCategory = (category) => {
-    let url =
-        "https://moviesfunctionapp.azurewebsites.net/api/GetMovies?category=" +
-        category;
-    fetch(url)
-        .then((res) => res.json())
-        .then((json) => {
-            displayMovieList(json);
-        })
-        .catch((err) => {
-            console.log("catch erro", err);
-        });
-};
+// const getMoviesFromCategory = (category) => {
+//     let url =
+//         "https://moviesfunctionapp.azurewebsites.net/api/GetMovies?category=" +
+//         category;
+//     fetch(url)
+//         .then((res) => res.json())
+//         .then((json) => {
+//             displayMovieList(json);
+//         })
+//         .catch((err) => {
+//             console.log("catch erro", err);
+//         });
+// };
 
 const getFavourites = () => {
     let favList = [];
@@ -122,6 +140,7 @@ const getFavourites = () => {
                     favList.push(movie);
                 }
             });
+            console.log("entrei no getFavourites")
             displayMovieList(favList);
         })
         .catch((err) => console.log(err));
